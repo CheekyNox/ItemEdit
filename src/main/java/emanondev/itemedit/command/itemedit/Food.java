@@ -7,6 +7,8 @@ import emanondev.itemedit.command.SubCmd;
 import emanondev.itemedit.utility.CompleteUtility;
 import emanondev.itemedit.utility.ItemUtils;
 import emanondev.itemedit.utility.VersionUtils;
+import lombok.Getter;
+import lombok.Setter;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -781,6 +783,8 @@ public class Food extends SubCmd {
     }
 
 
+    @Setter
+    @Getter
     private static class FoodPojo {
         private PotionEffect potionEffect;
         private float probability;
@@ -790,20 +794,5 @@ public class Food extends SubCmd {
             this.probability = probability;
         }
 
-        public PotionEffect getPotionEffect() {
-            return potionEffect;
-        }
-
-        public void setPotionEffect(PotionEffect potionEffect) {
-            this.potionEffect = potionEffect;
-        }
-
-        public float getProbability() {
-            return probability;
-        }
-
-        public void setProbability(float probability) {
-            this.probability = probability;
-        }
     }
 }

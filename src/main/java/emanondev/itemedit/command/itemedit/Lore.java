@@ -256,9 +256,7 @@ public class Lore extends SubCmd {
         } else {
             lore = new ArrayList<>();
         }
-        for (int i = 0; i < lore.size(); i++) {
-            lore.set(i, Util.formatText(p, lore.get(i), getPermission()));
-        }
+        lore.replaceAll(text -> Util.formatText(p, text, getPermission()));
         copies.put(p.getUniqueId(), lore);
         Util.sendMessage(p, this.getLanguageString("copyBook.feedback", null, p));
     }
@@ -273,9 +271,7 @@ public class Lore extends SubCmd {
             return;
         }
         List<String> lore = new ArrayList<>(loreCopy.getStringList(args[2]));
-        for (int i = 0; i < lore.size(); i++) {
-            lore.set(i, Util.formatText(p, lore.get(i), getPermission()));
-        }
+        lore.replaceAll(text -> Util.formatText(p, text, getPermission()));
         copies.put(p.getUniqueId(), lore);
         Util.sendMessage(p, this.getLanguageString("copyFile.feedback", null, p));
     }

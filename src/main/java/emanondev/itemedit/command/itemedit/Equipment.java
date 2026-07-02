@@ -1,6 +1,5 @@
 package emanondev.itemedit.command.itemedit;
 
-import emanondev.itemedit.ItemEdit;
 import emanondev.itemedit.Util;
 import emanondev.itemedit.aliases.Aliases;
 import emanondev.itemedit.command.ItemEditCommand;
@@ -101,13 +100,64 @@ public class Equipment extends SubCmd {
         }
     }
 
+    public void onFail(@NotNull CommandSender target, @NotNull String alias) {
+        Util.sendMessage(target, new ComponentBuilder(getLanguageString("help-header", "", target)).create());
+        for (String sub : subCommands) {
+            Util.sendMessage(target, new ComponentBuilder(
+                    ChatColor.DARK_GREEN + "/" + alias + " " + this.getName() + ChatColor.GREEN + " " + sub + " "
+                            + getLanguageString(sub + ".params", "", target))
+                    .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
+                            "/" + alias + " " + this.getName() + " " + sub + " "))
+                    .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                            new Text(String.join("\n",
+                                    getLanguageStringList(sub + ".description", null, target)))))
+                    .create());
+        }
+    }
+
+    @Override
+    public List<String> onComplete(@NotNull CommandSender sender, String[] args) {
+        switch (args.length) {
+            case 2:
+                return CompleteUtility.complete(args[1], subCommands);
+            case 3:
+                switch (args[1].toLowerCase(Locale.ENGLISH)) {
+                    case "slot":
+                        return CompleteUtility.complete(args[2], Aliases.EQUIPMENT_SLOTS);
+                    case "swappable":
+                    case "dispensable":
+                    case "damageonhurt":
+                    case "equiponinteract":
+                    case "canshear":
+                        return CompleteUtility.complete(args[2], Aliases.BOOLEAN);
+                    case "equipsound":
+                    case "shearsound":
+                        return CompleteUtility.complete(args[2], Aliases.SOUND);
+                    case "allowedentities":
+                        List<String> res = CompleteUtility.complete(args[2], Aliases.ENTITY_TYPE, EntityType::isAlive);
+                        res.addAll(CompleteUtility.complete(args[2], Aliases.ENTITY_GROUPS,
+                                tag -> tag.getValues().stream().anyMatch(EntityType::isAlive)));
+                        return res;
+                    case "cameraoverlay":
+                        return CompleteUtility.complete(args[2], "minecraft:misc/pumpkinblur");
+                }
+            default:
+                if (args[1].equalsIgnoreCase("allowedentities")) {
+                    List<String> res = CompleteUtility.complete(args[args.length - 1], Aliases.ENTITY_TYPE, EntityType::isAlive);
+                    res.addAll(CompleteUtility.complete(args[args.length - 1], Aliases.ENTITY_GROUPS,
+                            tag -> tag.getValues().stream().anyMatch(EntityType::isAlive)));
+                    return res;
+                }
+        }
+        return Collections.emptyList();
+    }
 
     //ie equip model <value>
     private void equipmentModel(Player p, ItemStack item, @NotNull String alias, String[] args) {
         try {
             if (args.length == 2) {
                 ItemMeta meta = ItemUtils.getMeta(item);
-                if (!meta.hasEquippable()){
+                if (!meta.hasEquippable()) {
                     sendCustomFeedbackForSub(p, "model", "feedback-reset");
                     return;
                 }
@@ -452,58 +502,5 @@ public class Equipment extends SubCmd {
             t.printStackTrace();
             sendFailFeedbackForSub(p, alias, "clear");
         }
-    }
-
-
-    public void onFail(@NotNull CommandSender target, @NotNull String alias) {
-        Util.sendMessage(target, new ComponentBuilder(getLanguageString("help-header", "", target)).create());
-        for (String sub : subCommands) {
-            Util.sendMessage(target, new ComponentBuilder(
-                    ChatColor.DARK_GREEN + "/" + alias + " " + this.getName() + ChatColor.GREEN + " " + sub + " "
-                            + getLanguageString(sub + ".params", "", target))
-                    .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,
-                            "/" + alias + " " + this.getName() + " " + sub + " "))
-                    .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            new Text(String.join("\n",
-                                    getLanguageStringList(sub + ".description", null, target)))))
-                    .create());
-        }
-    }
-
-    @Override
-    public List<String> onComplete(@NotNull CommandSender sender, String[] args) {
-        switch (args.length) {
-            case 2:
-                return CompleteUtility.complete(args[1], subCommands);
-            case 3:
-                switch (args[1].toLowerCase(Locale.ENGLISH)) {
-                    case "slot":
-                        return CompleteUtility.complete(args[2], Aliases.EQUIPMENT_SLOTS);
-                    case "swappable":
-                    case "dispensable":
-                    case "damageonhurt":
-                    case "equiponinteract":
-                    case "canshear":
-                        return CompleteUtility.complete(args[2], Aliases.BOOLEAN);
-                    case "equipsound":
-                    case "shearsound":
-                        return CompleteUtility.complete(args[2], Aliases.SOUND);
-                    case "allowedentities":
-                        List<String> res = CompleteUtility.complete(args[2], Aliases.ENTITY_TYPE, EntityType::isAlive);
-                        res.addAll(CompleteUtility.complete(args[2], Aliases.ENTITY_GROUPS,
-                                tag -> tag.getValues().stream().anyMatch(EntityType::isAlive)));
-                        return res;
-                    case "cameraoverlay":
-                        return CompleteUtility.complete(args[2], "minecraft:misc/pumpkinblur");
-                }
-            default:
-                if (args[1].equalsIgnoreCase("allowedentities")) {
-                    List<String> res = CompleteUtility.complete(args[args.length - 1], Aliases.ENTITY_TYPE, EntityType::isAlive);
-                    res.addAll(CompleteUtility.complete(args[args.length - 1], Aliases.ENTITY_GROUPS,
-                            tag -> tag.getValues().stream().anyMatch(EntityType::isAlive)));
-                    return res;
-                }
-        }
-        return Collections.emptyList();
     }
 }

@@ -7,6 +7,7 @@ import emanondev.itemedit.command.ServerItemCommand;
 import emanondev.itemedit.storage.ServerStorage;
 import emanondev.itemedit.utility.InventoryUtils;
 import emanondev.itemedit.utility.ItemUtils;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,6 +28,12 @@ public class ShowServerItemsGui implements PagedGui {
     private static final YMLConfig GUI_CONFIG = ItemEdit.get().getConfig();
     private final Inventory inventory;
     private final Player target;
+    /**
+     * -- GETTER --
+     *
+     * @return 1+
+     */
+    @Getter
     private final int page;
     private int rows;
     private ArrayList<String> ids;
@@ -100,13 +107,6 @@ public class ShowServerItemsGui implements PagedGui {
     private ItemStack getPageInfoItem() {
         return this.loadLanguageDescription(this.getGuiItem("gui.serveritems.page-info", Material.NAME_TAG),
                 "gui.serveritems.page-info.description", "%player_name%", target.getName(), "%page%", String.valueOf(page));
-    }
-
-    /**
-     * @return 1+
-     */
-    public int getPage() {
-        return this.page;
     }
 
     @Override
