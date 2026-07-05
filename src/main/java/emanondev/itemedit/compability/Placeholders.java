@@ -113,7 +113,7 @@ public class Placeholders extends PlaceholderExpansion {
         } catch (Exception e) {
             ItemEdit.get().log("&c! &fWrong PlaceHolderValue %" + getIdentifier() + "_" + ChatColor.YELLOW + value
                     + ChatColor.WHITE + "% " + e.getMessage());
-            //e.printStackTrace();
+            //log.warn(e.getMessage(), e);
         }
         return null;
     }

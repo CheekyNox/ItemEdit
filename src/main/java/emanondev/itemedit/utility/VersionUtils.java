@@ -1,11 +1,13 @@
 package emanondev.itemedit.utility;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 
 
 /**
  * Utility class for managing server version information and compatibility checks.
  */
+@Slf4j
 public final class VersionUtils {
 
     private static int initVersion(int slot){
@@ -13,7 +15,7 @@ public final class VersionUtils {
         try {
             split = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
         } catch (Exception e) {
-            new IllegalStateException("(slot "+slot+") Invalid Bukkit version format: " + Bukkit.getBukkitVersion(), e).printStackTrace();
+            log.warn("(slot "+slot+") Invalid Bukkit version format: " + Bukkit.getBukkitVersion(), e);
             return 100; //avoid stopping the load, try to start with wrong version
         }
         try {
@@ -25,7 +27,7 @@ public final class VersionUtils {
             }
             return Integer.parseInt(split[slot]);
         } catch (Exception e){
-            new IllegalStateException("(slot "+slot+") Invalid Bukkit version format: " + Bukkit.getBukkitVersion(), e).printStackTrace();
+            log.warn("(slot "+slot+") Invalid Bukkit version format: " + Bukkit.getBukkitVersion(),e);
             return 100; //avoid stopping the load, try to start with wrong version
         }
     }

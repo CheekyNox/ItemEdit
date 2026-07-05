@@ -8,6 +8,7 @@ import emanondev.itemedit.storage.ServerStorage;
 import emanondev.itemedit.utility.InventoryUtils;
 import emanondev.itemedit.utility.ItemUtils;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 
+@Slf4j
 public class ShowServerItemsGui implements PagedGui {
     private static final YMLConfig GUI_CONFIG = ItemEdit.get().getConfig();
     private final Inventory inventory;
@@ -87,7 +89,8 @@ public class ShowServerItemsGui implements PagedGui {
             }
             ItemStack item = storage.getItem(list.get(slot));
             if (item == null) {
-                new NullPointerException("invalid id " + list.get(slot)).printStackTrace();
+                NullPointerException e = new NullPointerException("invalid id " + list.get(slot));
+                    log.warn(e.getMessage(), e);
                 continue;
             }
             if (showItems) {

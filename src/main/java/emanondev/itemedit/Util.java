@@ -1,6 +1,7 @@
 package emanondev.itemedit;
 
 import emanondev.itemedit.compability.Hooks;
+import lombok.extern.slf4j.Slf4j;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+@Slf4j
 public final class Util {
 
     private Util() {
@@ -69,7 +71,7 @@ public final class Util {
             pw.flush();
             pw.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn(e.getMessage(), e);
         }
     }
 

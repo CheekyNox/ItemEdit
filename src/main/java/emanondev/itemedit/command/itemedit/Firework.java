@@ -4,6 +4,7 @@ import emanondev.itemedit.Util;
 import emanondev.itemedit.command.ItemEditCommand;
 import emanondev.itemedit.command.SubCmd;
 import emanondev.itemedit.gui.FireworkEditor;
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 public class Firework extends SubCmd {
 
     public Firework(ItemEditCommand cmd) {
@@ -31,7 +33,7 @@ public class Firework extends SubCmd {
         try {
             ((Player) sender).openInventory(new FireworkEditor((Player) sender, item).getInventory());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warn(e.getMessage(), e);
             onFail(p, alias);
         }
     }

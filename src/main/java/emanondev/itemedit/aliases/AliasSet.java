@@ -2,10 +2,12 @@ package emanondev.itemedit.aliases;
 
 import emanondev.itemedit.ItemEdit;
 import emanondev.itemedit.YMLConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+@Slf4j
 public abstract class AliasSet<T> implements IAliasSet<T> {
 
     private static final YMLConfig config = ItemEdit.get().getConfig("aliases.yml");
@@ -31,9 +33,9 @@ public abstract class AliasSet<T> implements IAliasSet<T> {
                 ok = false;
             }
             if (val == null) {
-                new NullPointerException(value == null ? "null value"
-                        : value + " of " + value.getClass().getSimpleName() + " has null name")
-                        .printStackTrace();
+                NullPointerException e = new NullPointerException(value == null ? "null value"
+                        : value + " of " + value.getClass().getSimpleName() + " has null name");
+                log.warn(e.getMessage(), e);
                 continue;
             }
             if (val.contains(" ") || !val.equals(val.toLowerCase(Locale.ENGLISH))) {

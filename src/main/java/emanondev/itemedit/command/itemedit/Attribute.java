@@ -6,6 +6,7 @@ import emanondev.itemedit.command.SubCmd;
 import emanondev.itemedit.utility.CompleteUtility;
 import emanondev.itemedit.utility.ItemUtils;
 import emanondev.itemedit.utility.VersionUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+@Slf4j
 public class Attribute extends SubCmd {
     private static final String[] attributeSub = new String[]{"add", "remove"};
 
@@ -109,7 +111,7 @@ public class Attribute extends SubCmd {
             item.setItemMeta(itemMeta);
             updateView(p);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warn(e.getMessage(), e);
             sendFailFeedbackForSub(p, alias, "add");
         }
     }

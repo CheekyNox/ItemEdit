@@ -7,6 +7,7 @@ import emanondev.itemedit.command.SubCmd;
 import emanondev.itemedit.utility.CompleteUtility;
 import emanondev.itemedit.utility.ItemUtils;
 import emanondev.itemedit.utility.TagContainer;
+import lombok.extern.slf4j.Slf4j;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class Equipment extends SubCmd {
 
     private final String[] subCommands = new String[]{"slot", "swappable", "allowedentities", "equipsound",
@@ -183,7 +185,7 @@ public class Equipment extends SubCmd {
             updateView(p);
             sendFeedbackForSub(p, "model", "%key%", key.toString());
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn(t.getMessage(), t);
             sendFailFeedbackForSub(p, alias, "model");
         }
     }
@@ -215,7 +217,7 @@ public class Equipment extends SubCmd {
             sendCustomFeedbackForSub(p, "canshear", "unsupported-version",
                     "%value%", Bukkit.getVersion());
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn(t.getMessage(), t);
             sendFailFeedbackForSub(p, alias, "shearsound");
         }
     }
@@ -243,7 +245,7 @@ public class Equipment extends SubCmd {
             sendCustomFeedbackForSub(p, "canshear", "unsupported-version",
                     "%value%", Bukkit.getVersion());
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn(t.getMessage(), t);
             sendFailFeedbackForSub(p, alias, "canshear");
         }
     }
@@ -274,7 +276,7 @@ public class Equipment extends SubCmd {
                 sendCustomFeedbackForSub(p, "cameraoverlay", "feedback-reset");
             }
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn(t.getMessage(), t);
             sendFailFeedbackForSub(p, alias, "cameraoverlay");
         }
     }
@@ -307,7 +309,7 @@ public class Equipment extends SubCmd {
                 }
             }
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn(t.getMessage(), t);
             sendFailFeedbackForSub(p, alias, "damageonhurt");
         }
     }
@@ -333,7 +335,7 @@ public class Equipment extends SubCmd {
             item.setItemMeta(meta);
             sendFeedbackForSub(p, "dispensable", "%value%", String.valueOf(value));
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn(t.getMessage(), t);
             sendFailFeedbackForSub(p, alias, "dispensable");
         }
     }
@@ -362,7 +364,7 @@ public class Equipment extends SubCmd {
             sendCustomFeedbackForSub(p, "canshear", "unsupported-version",
                     "%value%", Bukkit.getVersion());
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn(t.getMessage(), t);
             sendFailFeedbackForSub(p, alias, "equiponinteract");
         }
     }
@@ -387,7 +389,7 @@ public class Equipment extends SubCmd {
             item.setItemMeta(meta);
             sendFeedbackForSub(p, "swappable", "%value%", String.valueOf(value));
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn(t.getMessage(), t);
             sendFailFeedbackForSub(p, alias, "swappable");
         }
     }
@@ -428,7 +430,7 @@ public class Equipment extends SubCmd {
             sendFeedbackForSub(p, "allowedentities",
                     "%value%", types.stream().map(Enum::name).collect(Collectors.joining(", ")));
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn(t.getMessage(), t);
             sendFailFeedbackForSub(p, alias, "allowedentities");
         }
     }
@@ -458,7 +460,7 @@ public class Equipment extends SubCmd {
                 sendCustomFeedbackForSub(p, "equipsound", "feedback-reset");
             }
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn(t.getMessage(), t);
             sendFailFeedbackForSub(p, alias, "equipsound");
         }
     }
@@ -483,7 +485,7 @@ public class Equipment extends SubCmd {
             item.setItemMeta(meta);
             sendFeedbackForSub(p, "slot", "%value%", args[2]);
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn(t.getMessage(), t);
             sendFailFeedbackForSub(p, alias, "slot");
         }
     }
@@ -499,7 +501,7 @@ public class Equipment extends SubCmd {
             item.setItemMeta(meta);
             sendFeedbackForSub(p, "clear");
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn(t.getMessage(), t);
             sendFailFeedbackForSub(p, alias, "clear");
         }
     }

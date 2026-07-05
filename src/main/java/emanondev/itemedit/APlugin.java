@@ -6,6 +6,7 @@ import emanondev.itemedit.plugin.PluginAdditionalInfo;
 import emanondev.itemedit.utility.ReflectionUtils;
 import emanondev.itemedit.utility.VersionUtils;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -25,6 +26,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
+@Slf4j
 public abstract class APlugin extends JavaPlugin {
 
     private final Map<String, YMLConfig> configs =
@@ -227,7 +229,7 @@ public abstract class APlugin extends JavaPlugin {
                     check = true;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.warn(e.getMessage(), e);
             }
         if (check) {
             ArrayList<String> toRemove = new ArrayList<>();
@@ -294,7 +296,7 @@ public abstract class APlugin extends JavaPlugin {
 
         } catch (Throwable e) {
             this.log(ChatColor.RED + "Error while loading " + this.getName() + ", disabling it");
-            e.printStackTrace();
+            log.warn(e.getMessage(), e);
             Bukkit.getServer().getPluginManager().disablePlugin(this);
         }
     }
@@ -396,7 +398,7 @@ public abstract class APlugin extends JavaPlugin {
                 }));
             }
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn(t.getMessage(), t);
         }
         bstatsMetrics = null;
     }

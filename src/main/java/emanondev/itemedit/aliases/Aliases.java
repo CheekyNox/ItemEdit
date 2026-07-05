@@ -2,6 +2,7 @@ package emanondev.itemedit.aliases;
 
 import emanondev.itemedit.utility.TagContainer;
 import emanondev.itemedit.utility.VersionUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Tag;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+@Slf4j
 public class Aliases {
 
     public static final EnchAliases ENCHANT = getEnchAliases();
@@ -137,7 +139,7 @@ public class Aliases {
                 return new TrimMaterialAliasesOld();
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            log.warn(e.getMessage(), e);
             return null;
         }
     }
@@ -153,7 +155,7 @@ public class Aliases {
                 return new TrimPatternAliasesOld();
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            log.warn(e.getMessage(), e);
             return null;
         }
     }
@@ -269,7 +271,7 @@ public class Aliases {
         try {
             return new RarityAliases();
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn(t.getMessage(), t);
             return null;
         }
     }
