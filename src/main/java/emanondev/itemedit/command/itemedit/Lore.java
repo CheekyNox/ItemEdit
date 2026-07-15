@@ -6,6 +6,7 @@ import emanondev.itemedit.UtilsString;
 import emanondev.itemedit.YMLConfig;
 import emanondev.itemedit.command.ItemEditCommand;
 import emanondev.itemedit.command.SubCmd;
+import emanondev.itemedit.compability.NexoItemProvider;
 import emanondev.itemedit.utility.CompleteUtility;
 import emanondev.itemedit.utility.ItemUtils;
 import org.bukkit.ChatColor;
@@ -200,6 +201,7 @@ public class Lore extends SubCmd {
             }
             meta.setLore(lore);
             item.setItemMeta(meta);
+            syncNexoLoreOverride(p, item, lore);
             updateView(p);
         } catch (Exception e) {
             sendFailFeedbackForSub(p, alias, "replace");
@@ -214,6 +216,7 @@ public class Lore extends SubCmd {
         ItemMeta meta = ItemUtils.getMeta(item);
         meta.setLore(copies.get(p.getUniqueId()));
         item.setItemMeta(meta);
+        syncNexoLoreOverride(p, item, copies.get(p.getUniqueId()));
         Util.sendMessage(p, this.getLanguageString("paste.feedback", null, p));
         updateView(p);
     }
@@ -376,6 +379,7 @@ public class Lore extends SubCmd {
         lore.add(lineText);
         itemMeta.setLore(lore);
         item.setItemMeta(itemMeta);
+        syncNexoLoreOverride(p, item, lore);
         updateView(p);
     }
 
@@ -431,6 +435,7 @@ public class Lore extends SubCmd {
             lore.add(line, lineText);
             itemMeta.setLore(lore);
             item.setItemMeta(itemMeta);
+            syncNexoLoreOverride(p, item, lore);
             updateView(p);
         } catch (Exception e) {
             sendFailFeedbackForSub(p, alias, "insert");
@@ -489,6 +494,7 @@ public class Lore extends SubCmd {
             lore.set(line, lineText);
             itemMeta.setLore(lore);
             item.setItemMeta(itemMeta);
+            syncNexoLoreOverride(p, item, lore);
             updateView(p);
         } catch (Exception e) {
             sendFailFeedbackForSub(p, alias, "set");
@@ -525,6 +531,7 @@ public class Lore extends SubCmd {
             lore.remove(line);
             itemMeta.setLore(lore);
             item.setItemMeta(itemMeta);
+            syncNexoLoreOverride(p, item, lore);
             updateView(p);
         } catch (Exception e) {
             sendFailFeedbackForSub(p, alias, "remove");
@@ -535,6 +542,14 @@ public class Lore extends SubCmd {
         ItemMeta meta = ItemUtils.getMeta(item);
         meta.setLore(null);
         item.setItemMeta(meta);
+        syncNexoLoreOverride(p, item, null);
         updateView(p);
+    }
+
+    private void syncNexoLoreOverride(Player player, ItemStack item, List<String> lore) {
+        if (!NexoItemProvider.shouldSyncItemOverrides(item)) {
+            return;
+        }
+        ItemUtils.setHandItem(player, NexoItemProvider.storeLoreOverride(item, lore, true));
     }
 }

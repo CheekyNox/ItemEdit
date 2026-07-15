@@ -2,7 +2,10 @@ package emanondev.itemedit.command;
 
 import emanondev.itemedit.ItemEdit;
 import emanondev.itemedit.Util;
+import emanondev.itemedit.compability.Hooks;
+import emanondev.itemedit.compability.NexoItemProvider;
 import emanondev.itemedit.utility.CompleteUtility;
+import emanondev.itemedit.utility.ItemUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -18,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -48,7 +52,7 @@ public class ItemEditImportCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length == 1) {
-            return CompleteUtility.complete(args[0], Collections.singletonList("itemeditor"));
+            return CompleteUtility.complete(args[0], Arrays.asList("itemeditor", "nexo"));
         }
         return Collections.emptyList();
     }
@@ -69,11 +73,14 @@ public class ItemEditImportCommand implements TabExecutor {
 
 
         if (args.length == 0) {
-            Util.sendMessage(sender, String.join("\n", plugin.getLanguageConfig(sender).loadMultiMessage(
-                    "itemeditimport.help", new ArrayList<>())));
+            Util.sendMessage(sender, String.join("\n", loadImportHelp(sender)));
             return true;
         }
         switch (args[0].toLowerCase(Locale.ENGLISH)) {
+            case "nexo": {
+                importNexo(sender, args);
+                return true;
+            }
             case "itemeditor": {
                 File[] files = new File("plugins" + File.separator + "ItemEditor" + File.separator + "items").listFiles();
                 if (files != null
@@ -131,9 +138,84 @@ public class ItemEditImportCommand implements TabExecutor {
             default:
                 break;
         }
-        Util.sendMessage(sender, String.join("\n", plugin.getLanguageConfig(sender).loadMultiMessage("itemeditimport.help",
-                new ArrayList<>())));
+        Util.sendMessage(sender, String.join("\n", loadImportHelp(sender)));
         return true;
+    }
+
+    private List<String> loadImportHelp(CommandSender sender) {
+        List<String> help = new ArrayList<>(plugin.getLanguageConfig(sender).loadMultiMessage(
+                "itemeditimport.help", Collections.singletonList("&a/itemeditimport ItemEditor &2- import items from ItemEditor plugin")));
+        boolean hasNexo = false;
+        for (String line : help) {
+            if (line.toLowerCase(Locale.ENGLISH).contains("nexo")) {
+                hasNexo = true;
+                break;
+            }
+        }
+        if (!hasNexo) {
+            help.add("&a/itemeditimport Nexo <nexoItemId> [serverItemId] &2- import item from Nexo plugin");
+        }
+        return help;
+    }
+
+    private void importNexo(CommandSender sender, String[] args) {
+        if (args.length < 2) {
+            sendNexoMessage(sender, "usage",
+                    Collections.singletonList("&4[&cItemEdit&4] &cUsage: &6/itemeditimport nexo <nexoItemId> [serverItemId]"));
+            return;
+        }
+        if (!Hooks.isNexoEnabled()) {
+            sendNexoMessage(sender, "not-enabled",
+                    Collections.singletonList("&4[&cItemEdit&4] &cNexo plugin is not enabled"));
+            return;
+        }
+
+        String nexoId = args[1];
+        String serverItemId = args.length >= 3 ? args[2] : nexoId;
+        try {
+            ItemEdit.get().getServerStorage().validateID(serverItemId);
+        } catch (Exception e) {
+            sendNexoMessage(sender, "invalid-id",
+                    Collections.singletonList("&4[&cItemEdit&4] &6%id% &cis not an acceptable server item id"),
+                    "%id%", serverItemId);
+            return;
+        }
+        if (ItemEdit.get().getServerStorage().getItem(serverItemId) != null) {
+            sendNexoMessage(sender, "already-used-id",
+                    Collections.singletonList("&4[&cItemEdit&4] &6%id% &cis already used"),
+                    "%id%", serverItemId);
+            return;
+        }
+
+        ItemStack item = NexoItemProvider.getItem(nexoId);
+        if (ItemUtils.isAirOrNull(item)) {
+            sendNexoMessage(sender, "unable-to-get-item",
+                    Collections.singletonList("&4[&cItemEdit&4] &cUnable to load Nexo item &6%id%&c. If Nexo is still loading items, try again in a few seconds."),
+                    "%id%", nexoId);
+            return;
+        }
+
+        try {
+            ItemEdit.get().getServerStorage().setItem(serverItemId, item);
+            String itemName = NexoItemProvider.getItemName(nexoId);
+            if (itemName != null && !itemName.isEmpty()) {
+                ItemEdit.get().getServerStorage().setNick(serverItemId, itemName);
+            }
+            sendNexoMessage(sender, "import-success",
+                    Collections.singletonList("&9[&fItemEdit&9] &aImported Nexo item &e%nexo_id% &aas server item &e%id%"),
+                    "%nexo_id%", nexoId,
+                    "%id%", serverItemId);
+        } catch (Exception e) {
+            sendNexoMessage(sender, "unable-to-save-item",
+                    Collections.singletonList("&4[&cItemEdit&4] &cUnable to save Nexo item &6%id%"),
+                    "%id%", nexoId);
+            log.warn(e.getMessage(), e);
+        }
+    }
+
+    private void sendNexoMessage(CommandSender sender, String path, List<String> defaults, String... holders) {
+        Util.sendMessage(sender, String.join("\n", plugin.getLanguageConfig(sender).loadMultiMessage(
+                "itemeditimport.nexo." + path, defaults, sender instanceof Player ? (Player) sender : null, true, holders)));
     }
 
 }

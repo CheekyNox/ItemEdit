@@ -61,6 +61,10 @@ public class Hooks {
         return isEnabled("DungeonMMO");
     }
 
+    public static boolean isNexoEnabled() {
+        return isEnabled("Nexo");
+    }
+
     private static MiniMessageUtil initMiniMessage() {
         try {
             if (VersionUtils.hasPaperAPI() && VersionUtils.isVersionAfter(1, 16, 5)) {

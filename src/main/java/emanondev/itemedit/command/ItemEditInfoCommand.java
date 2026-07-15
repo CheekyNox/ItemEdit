@@ -59,6 +59,7 @@ public class ItemEditInfoCommand implements TabExecutor {
                         .append("Vault: ").append(Hooks.getPluginVersion("Vault", "Nope")).append("\n")
                         .append("MythicMobs: ").append(Hooks.getPluginVersion("MythicMobs", "Nope")).append("\n")
                         .append("ShopGuiPlus: ").append(Hooks.getPluginVersion("ShopGuiPlus", "Nope")).append("\n")
+                        .append("Nexo: ").append(Hooks.getPluginVersion("Nexo", "Nope")).append("\n")
                         .append("Vanish: ").append(Hooks.getPluginVersion("PremiumVanish", Hooks.getPluginVersion("SuperVanish", "Nope")));
             ComponentBuilder msg = new ComponentBuilder(
                     ChatColor.BLUE + "Server: " + ChatColor.AQUA + Bukkit.getVersion() + "\n" +
@@ -71,6 +72,7 @@ public class ItemEditInfoCommand implements TabExecutor {
                             ChatColor.BLUE + "Vault: " + ChatColor.AQUA + Hooks.getPluginVersion("Vault", "Nope") + "\n" +
                             ChatColor.BLUE + "MythicMobs: " + ChatColor.AQUA + Hooks.getPluginVersion("MythicMobs", "Nope") + "\n" +
                             ChatColor.BLUE + "ShopGuiPlus: " + ChatColor.AQUA + Hooks.getPluginVersion("ShopGuiPlus", "Nope") + "\n" +
+                            ChatColor.BLUE + "Nexo: " + ChatColor.AQUA + Hooks.getPluginVersion("Nexo", "Nope") + "\n" +
                             ChatColor.BLUE + "Vanish: " + ChatColor.AQUA + Hooks.getPluginVersion("PremiumVanish", Hooks.getPluginVersion("SuperVanish", "Nope")));
             if (sender instanceof Player && VersionUtils.isVersionAfter(1, 9)) {
                 msg.append("\n").append(new ComponentBuilder(ChatColor.GOLD + ChatColor.UNDERLINE.toString() + "Click To Copy\n")

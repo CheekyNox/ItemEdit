@@ -4,6 +4,7 @@ import emanondev.itemedit.ItemEdit;
 import emanondev.itemedit.Util;
 import emanondev.itemedit.command.ItemEditCommand;
 import emanondev.itemedit.command.SubCmd;
+import emanondev.itemedit.compability.NexoItemProvider;
 import emanondev.itemedit.utility.CompleteUtility;
 import emanondev.itemedit.utility.ItemUtils;
 import org.bukkit.ChatColor;
@@ -38,11 +39,14 @@ public class Rename extends SubCmd {
         if (!Util.isAllowedRenameItem(sender, item.getType())) {
             return;
         }
+        boolean syncNexoRename = NexoItemProvider.shouldSyncOriginalItemRename(item);
 
         ItemMeta itemMeta = ItemUtils.getMeta(item);
         if (args.length == 1) {
             itemMeta.setDisplayName(" ");
             item.setItemMeta(itemMeta);
+            item = NexoItemProvider.storeRenameOverride(item, " ", syncNexoRename);
+            ItemUtils.setHandItem(p, item);
             updateView(p);
             return;
         }
@@ -50,6 +54,8 @@ public class Rename extends SubCmd {
         if (args.length == 2 && args[1].equalsIgnoreCase("-clear")) {
             itemMeta.setDisplayName(null);
             item.setItemMeta(itemMeta);
+            item = NexoItemProvider.storeRenameOverride(item, null, syncNexoRename);
+            ItemUtils.setHandItem(p, item);
             //TODO feedback
             updateView(p);
             return;
@@ -63,8 +69,11 @@ public class Rename extends SubCmd {
         }
 
         if (args.length == 2 && args[1].equalsIgnoreCase("-paste")) {
-            itemMeta.setDisplayName(copies.get(p.getUniqueId()));
+            String name = copies.get(p.getUniqueId());
+            itemMeta.setDisplayName(name);
             item.setItemMeta(itemMeta);
+            item = NexoItemProvider.storeRenameOverride(item, name, syncNexoRename);
+            ItemUtils.setHandItem(p, item);
             //TODO feedback
             updateView(p);
             return;
@@ -89,6 +98,8 @@ public class Rename extends SubCmd {
 
         itemMeta.setDisplayName(name);
         item.setItemMeta(itemMeta);
+        item = NexoItemProvider.storeRenameOverride(item, name, syncNexoRename);
+        ItemUtils.setHandItem(p, item);
         //TODO feedback
         updateView(p);
     }

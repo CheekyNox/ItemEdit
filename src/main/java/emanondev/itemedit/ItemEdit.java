@@ -203,6 +203,15 @@ public class ItemEdit extends APlugin {
                 log.warn(t.getMessage(), t);
             }
         }
+        if (Hooks.isNexoEnabled()) {
+            try {
+                this.log("Hooking into Nexo");
+                NexoItemProvider.setup();
+                registerListener(new NexoItemProvider());
+            } catch (Throwable t) {
+                log.warn(t.getMessage(), t);
+            }
+        }
     }
 
     private void initCommands() {
